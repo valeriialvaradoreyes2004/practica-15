@@ -1,0 +1,50 @@
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+#Hacer solicitud HTTP para obtener el codigo HTML de la pagina
+url = 'https://hablemosdecinedigital.wordpress.com/2018/05/16/las-mejores-10-paginas-web-sobre-cine/'
+respuesta = requests.get(url)
+
+html = respuesta.text
+
+soup = BeautifulSoup(html, 'html.parser')
+#print(soup)
+
+box = soup.find('div', class_= 'entry-content')
+
+#print(box)
+
+# Extrae el texto de cada etiqueta 'a'
+
+lista_nombres = []
+lista_description = []
+
+name = box.find_all('a')
+
+#for extrae in name:
+  #lista.append(extrae.text)
+
+#print(lista)
+
+description = box.find_all('p')
+
+
+for item in name:
+  lista_nombres.append(item.get_text(strip=True, separator=','))
+
+for item in description:
+  lista_description.append(item.get_text(strip=True, separator=','))
+
+
+#print(len(lista_nombres))
+#print(len(lista_description))
+    #print(extrae.text)
+#print(name)
+
+with open('webscraping_phyton.csv', 'w') as archivos_csv_peliculas:
+  filecsv = csv.writer(archivos_csv_peliculas, delimiter=',')
+  filecsv.writerow(['nombres', 'description'])
+
+  for i in range(0, len(lista_nombres)):
+    filecsv.writerow([lista_nombres[i], lista_description[i]])
